@@ -6,11 +6,10 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ButtonToggle;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.lightswitch.app.task.TaskPower;
-import com.mrcrayfish.lightswitch.init.ModBlocks;
+import com.mrcrayfish.lightswitch.app.task.TaskLightLevel;
+import com.mrcrayfish.lightswitch.block.BlockLight;
 import com.mrcrayfish.lightswitch.object.Light;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -18,7 +17,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class ApplicationLightSwitch extends Application
             if(i == 0 && itemListLights.getSelectedIndex() != -1)
             {
                 Light light = itemListLights.getSelectedItem();
-                TaskPower task = new TaskPower(light.getPos(), !light.isPower());
+                TaskLightLevel task = new TaskLightLevel(light.getPos(), !light.isPower() ? 15 : 0);
                 task.setCallback((nbtTagCompound, success) ->
                 {
                     if(success)
@@ -101,9 +99,9 @@ public class ApplicationLightSwitch extends Application
                 {
                     BlockPos pos = new BlockPos(laptopPos.getX() + x, laptopPos.getY() + y, laptopPos.getZ() + z);
                     IBlockState state = world.getBlockState(pos);
-                    if(state.getBlock() == ModBlocks.light_off || state.getBlock() == ModBlocks.light_on)
+                    if(state.getBlock() instanceof BlockLight)
                     {
-                        Light light = new Light(pos, state.getBlock() != ModBlocks.light_off);
+                        Light light = new Light(pos, state.getValue(BlockLight.LIGHT_LEVEL) > 0);
                         lights.add(light);
                     }
                 }

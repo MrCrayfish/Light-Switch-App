@@ -1,8 +1,7 @@
 package com.mrcrayfish.lightswitch.app.task;
 
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.lightswitch.init.ModBlocks;
-import jdk.nashorn.internal.ir.Block;
+import com.mrcrayfish.lightswitch.block.BlockLight;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,36 +11,40 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class TaskPower extends Task
+public class TaskLightLevel extends Task
 {
     private long pos;
-    private boolean power;
+    private int level;
 
-    private TaskPower()
+    private TaskLightLevel()
     {
         super("power_light");
     }
 
-    public TaskPower(BlockPos pos, boolean power)
+    public TaskLightLevel(BlockPos pos, int level)
     {
         this();
         this.pos = pos.toLong();
-        this.power = power;
+        this.level = level;
     }
 
     @Override
     public void prepareRequest(NBTTagCompound tag)
     {
         tag.setLong("pos", pos);
-        tag.setBoolean("power", power);
+        tag.setInteger("level", level);
     }
 
     @Override
     public void processRequest(NBTTagCompound tag, World world, EntityPlayer entityPlayer)
     {
         BlockPos pos = BlockPos.fromLong(tag.getLong("pos"));
-        world.setBlockState(pos, tag.getBoolean("power") ? ModBlocks.light_on.getDefaultState() : ModBlocks.light_off.getDefaultState());
-        this.setSuccessful();
+        IBlockState state = world.getBlockState(pos);
+        if(state.getBlock() instanceof BlockLight)
+        {
+            world.setBlockState(pos, state.withProperty(BlockLight.LIGHT_LEVEL, Math.max(0, Math.min(15, tag.getInteger("level")))));
+            this.setSuccessful();
+        }
     }
 
     @Override

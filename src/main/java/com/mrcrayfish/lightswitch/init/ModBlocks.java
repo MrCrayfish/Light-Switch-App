@@ -20,13 +20,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ModBlocks
 {
-    public static Block light_off;
-    public static Block light_on;
+    public static Block light;
 
     public static void init()
     {
-        light_off = new BlockLight(false);
-        light_on = new BlockLight(true);
+        light = new BlockLight();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -36,36 +34,22 @@ public class ModBlocks
         public static void onRegisterBlocks(RegistryEvent.Register<Block> event)
         {
             init();
-            event.getRegistry().register(light_off);
-            event.getRegistry().register(light_on);
+            event.getRegistry().register(light);
         }
 
         @SubscribeEvent
         public static void onRegisterItems(RegistryEvent.Register<Item> event)
         {
-            registerItemBlock(event.getRegistry(), light_off);
-            registerItemBlock(event.getRegistry(), light_on);
-        }
-
-        private static void registerItemBlock(IForgeRegistry<Item> registry, Block block)
-        {
-            ItemBlock item = new ItemBlock(block);
-            item.setRegistryName(block.getRegistryName());
-            registry.register(item);
+            ItemBlock item = new ItemBlock(light);
+            item.setRegistryName(light.getRegistryName());
+            event.getRegistry().register(item);
         }
 
         @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public static void onRegisterModels(ModelRegistryEvent event)
         {
-            registerModel(light_off);
-            registerModel(light_on);
-        }
-
-        @SideOnly(Side.CLIENT)
-        private static void registerModel(Block block)
-        {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(light), 0, new ModelResourceLocation(light.getRegistryName(), "inventory"));
         }
     }
 }

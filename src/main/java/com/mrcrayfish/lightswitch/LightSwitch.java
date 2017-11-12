@@ -3,7 +3,7 @@ package com.mrcrayfish.lightswitch;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.lightswitch.app.ApplicationLightSwitch;
-import com.mrcrayfish.lightswitch.app.task.TaskPower;
+import com.mrcrayfish.lightswitch.app.task.TaskLightLevel;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -18,6 +18,6 @@ public class LightSwitch
     public void init(FMLInitializationEvent event)
     {
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "light_switch"), ApplicationLightSwitch.class);
-        TaskManager.registerTask(TaskPower.class);
+        TaskManager.registerTask(TaskLightLevel.class);
     }
 }

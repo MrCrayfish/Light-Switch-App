@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "light_level=0":  { "model": "lightswitch:light" },
+    "light_level=1":  { "model": "lightswitch:light" },
+    "light_level=2":  { "model": "lightswitch:light" },
+    "light_level=3":  { "model": "lightswitch:light" },
+    "light_level=4":  { "model": "lightswitch:light" },
+    "light_level=5":  { "model": "lightswitch:light" },
+    "light_level=6":  { "model": "lightswitch:light" },
+    "light_level=7":  { "model": "lightswitch:light" },
+    "light_level=8":  { "model": "lightswitch:light" },
+    "light_level=9":  { "model": "lightswitch:light" },
+    "light_level=10": { "model": "lightswitch:light" },
+    "light_level=11": { "model": "lightswitch:light" },
+    "light_level=12": { "model": "lightswitch:light" },
+    "light_level=13": { "model": "lightswitch:light" },
+    "light_level=14": { "model": "lightswitch:light" },
+    "light_level=15": { "model": "lightswitch:light" }
+  }
+}

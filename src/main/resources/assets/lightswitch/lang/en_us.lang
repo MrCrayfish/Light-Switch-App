@@ -1,4 +1,2 @@
 app.lightswitch.light_switch.name=Light Switch
-
-tile.light_on.name=Light
-tile.light_off.name=Light
+tile.light.name=Light
