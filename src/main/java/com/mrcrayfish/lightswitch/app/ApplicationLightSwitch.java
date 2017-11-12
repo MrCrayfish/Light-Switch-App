@@ -6,6 +6,7 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ButtonToggle;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.api.app.component.Slider;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.lightswitch.app.task.TaskLightLevel;
@@ -28,11 +29,12 @@ public class ApplicationLightSwitch extends Application
     @Override
     public void init()
     {
-        Layout layoutMain = new Layout(150, 108);
+        Layout layoutMain = new Layout(150, 120);
 
         ItemList<Light> itemListLights = new ItemList<>(5, 18, 120, 6);
-
+        Slider sliderLightLevel = new Slider(5, 105, 120);
         ButtonToggle buttonSwitch = new ButtonToggle(130, 18, Icon.POWER_ON);
+
         buttonSwitch.setEnabled(false);
         buttonSwitch.setClickListener((component, i) ->
         {
@@ -46,6 +48,7 @@ public class ApplicationLightSwitch extends Application
                     {
                         light.setPower(!light.isPower());
                         buttonSwitch.setIcon(light.isPower() ? Icon.POWER_ON : Icon.POWER_OFF);
+                        sliderLightLevel.setPercentage(light.isPower() ? 1F : 0F);
                     }
                 });
                 TaskManager.sendTask(task);
@@ -64,9 +67,22 @@ public class ApplicationLightSwitch extends Application
                 buttonSwitch.setEnabled(true);
                 buttonSwitch.setSelected(light.isPower());
                 buttonSwitch.setIcon(light.isPower() ? Icon.POWER_ON : Icon.POWER_OFF);
+                sliderLightLevel.setPercentage(!light.isPower() ? 0F : (light.getLevel() - 1) / 14F);
             }
         });
         layoutMain.addComponent(itemListLights);
+
+        sliderLightLevel.setSlideListener(v ->
+        {
+            if(itemListLights.getSelectedIndex() != -1)
+            {
+                int level = (int) (14.0F * v) + 1;
+                Light light = itemListLights.getSelectedItem();
+                light.setLevel(level);
+                TaskManager.sendTask(new TaskLightLevel(light.getPos(), level));
+            }
+        });
+        layoutMain.addComponent(sliderLightLevel);
 
         setCurrentLayout(layoutMain);
     }
@@ -101,7 +117,7 @@ public class ApplicationLightSwitch extends Application
                     IBlockState state = world.getBlockState(pos);
                     if(state.getBlock() instanceof BlockLight)
                     {
-                        Light light = new Light(pos, state.getValue(BlockLight.LIGHT_LEVEL) > 0);
+                        Light light = new Light(pos, state.getValue(BlockLight.LIGHT_LEVEL));
                         lights.add(light);
                     }
                 }

@@ -9,11 +9,13 @@ public class Light
 {
     private BlockPos pos;
     private boolean power;
+    private int level;
 
-    public Light(BlockPos pos, boolean power)
+    public Light(BlockPos pos, int level)
     {
         this.pos = pos;
-        this.power = power;
+        this.power = level > 0;
+        this.level = level;
     }
 
     public BlockPos getPos()
@@ -29,6 +31,16 @@ public class Light
     public void setPower(boolean power)
     {
         this.power = power;
+    }
+
+    public void setLevel(int level)
+    {
+        this.level = level;
+    }
+
+    public int getLevel()
+    {
+        return level;
     }
 
     @Override
