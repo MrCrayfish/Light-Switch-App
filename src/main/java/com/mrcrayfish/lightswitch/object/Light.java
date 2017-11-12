@@ -7,15 +7,22 @@ import net.minecraft.util.math.BlockPos;
  */
 public class Light
 {
+    private String name;
     private BlockPos pos;
     private boolean power;
     private int level;
 
-    public Light(BlockPos pos, int level)
+    public Light(String name, BlockPos pos, int level)
     {
+        this.name = name;
         this.pos = pos;
         this.power = level > 0;
         this.level = level;
+    }
+
+    public String getName()
+    {
+        return name;
     }
 
     public BlockPos getPos()
@@ -46,6 +53,6 @@ public class Light
     @Override
     public String toString()
     {
-        return "Light";
+        return name;
     }
 }

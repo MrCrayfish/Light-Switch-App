@@ -12,9 +12,11 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.lightswitch.app.task.TaskLightLevel;
 import com.mrcrayfish.lightswitch.block.BlockLight;
 import com.mrcrayfish.lightswitch.object.Light;
+import com.mrcrayfish.lightswitch.tileentity.TileEntityLight;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -117,8 +119,13 @@ public class ApplicationLightSwitch extends Application
                     IBlockState state = world.getBlockState(pos);
                     if(state.getBlock() instanceof BlockLight)
                     {
-                        Light light = new Light(pos, state.getValue(BlockLight.LIGHT_LEVEL));
-                        lights.add(light);
+                        TileEntity tileEntity = world.getTileEntity(pos);
+                        if(tileEntity instanceof TileEntityLight)
+                        {
+                            TileEntityLight teLight = (TileEntityLight) tileEntity;
+                            Light light = new Light(teLight.getName(), pos, state.getValue(BlockLight.LIGHT_LEVEL));
+                            lights.add(light);
+                        }
                     }
                 }
             }
