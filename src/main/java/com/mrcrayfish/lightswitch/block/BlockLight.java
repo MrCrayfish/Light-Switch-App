@@ -8,15 +8,18 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -24,6 +27,8 @@ import javax.annotation.Nullable;
 public class BlockLight extends Block implements ITileEntityProvider
 {
     public static final PropertyInteger LIGHT_LEVEL = PropertyInteger.create("light_level", 0, 15);
+
+    private static final AxisAlignedBB BOX = new AxisAlignedBB(4 * 0.0625, 13 * 0.0625, 4 * 0.0625, 12 * 0.0625, 16 * 0.0625, 12 * 0.0625);
 
     public BlockLight()
     {
@@ -42,6 +47,18 @@ public class BlockLight extends Block implements ITileEntityProvider
     public boolean isFullCube(IBlockState state)
     {
         return false;
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        return BOX;
+    }
+
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
+    {
+       Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BOX);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.mrcrayfish.lightswitch.app;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Icon;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ButtonToggle;
 import com.mrcrayfish.device.api.app.component.ItemList;
@@ -35,10 +35,10 @@ public class ApplicationLightSwitch extends Application
 
         ItemList<Light> itemListLights = new ItemList<>(5, 18, 120, 6);
         Slider sliderLightLevel = new Slider(5, 105, 120);
-        ButtonToggle buttonSwitch = new ButtonToggle(130, 18, Icon.POWER_ON);
+        ButtonToggle buttonSwitch = new ButtonToggle(130, 18, Icons.POWER_ON);
 
         buttonSwitch.setEnabled(false);
-        buttonSwitch.setClickListener((component, i) ->
+        buttonSwitch.setClickListener((mouseX, mouseY, i) ->
         {
             if(i == 0 && itemListLights.getSelectedIndex() != -1)
             {
@@ -49,7 +49,7 @@ public class ApplicationLightSwitch extends Application
                     if(success)
                     {
                         light.setPower(!light.isPower());
-                        buttonSwitch.setIcon(light.isPower() ? Icon.POWER_ON : Icon.POWER_OFF);
+                        buttonSwitch.setIcon(light.isPower() ? Icons.POWER_ON : Icons.POWER_OFF);
                         sliderLightLevel.setPercentage(light.isPower() ? 1F : 0F);
                     }
                 });
@@ -68,7 +68,7 @@ public class ApplicationLightSwitch extends Application
             {
                 buttonSwitch.setEnabled(true);
                 buttonSwitch.setSelected(light.isPower());
-                buttonSwitch.setIcon(light.isPower() ? Icon.POWER_ON : Icon.POWER_OFF);
+                buttonSwitch.setIcon(light.isPower() ? Icons.POWER_ON : Icons.POWER_OFF);
                 sliderLightLevel.setPercentage(!light.isPower() ? 0F : (light.getLevel() - 1) / 14F);
             }
         });
