@@ -19,11 +19,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ModBlocks
 {
-    public static Block light;
+    public static final Block LIGHT;
 
-    public static void init()
+    static
     {
-        light = new BlockLight();
+        LIGHT = new BlockLight();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -32,15 +32,14 @@ public class ModBlocks
         @SubscribeEvent
         public static void onRegisterBlocks(RegistryEvent.Register<Block> event)
         {
-            init();
-            event.getRegistry().register(light);
+            event.getRegistry().register(LIGHT);
         }
 
         @SubscribeEvent
         public static void onRegisterItems(RegistryEvent.Register<Item> event)
         {
-            ItemBlock item = new ItemBlock(light);
-            item.setRegistryName(light.getRegistryName());
+            ItemBlock item = new ItemBlock(LIGHT);
+            item.setRegistryName(LIGHT.getRegistryName());
             event.getRegistry().register(item);
         }
 
@@ -48,7 +47,7 @@ public class ModBlocks
         @SubscribeEvent
         public static void onRegisterModels(ModelRegistryEvent event)
         {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(light), 0, new ModelResourceLocation(light.getRegistryName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(LIGHT), 0, new ModelResourceLocation(LIGHT.getRegistryName(), "inventory"));
         }
     }
 }

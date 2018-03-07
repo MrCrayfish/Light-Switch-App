@@ -9,14 +9,14 @@ public class Light
 {
     private String name;
     private BlockPos pos;
-    private boolean power;
+    private boolean powered;
     private int level;
 
     public Light(String name, BlockPos pos, int level)
     {
         this.name = name;
         this.pos = pos;
-        this.power = level > 0;
+        this.powered = level > 0;
         this.level = level;
     }
 
@@ -30,14 +30,14 @@ public class Light
         return pos;
     }
 
-    public boolean isPower()
+    public boolean isPowered()
     {
-        return power;
+        return powered;
     }
 
-    public void setPower(boolean power)
+    public void setPowered(boolean powered)
     {
-        this.power = power;
+        this.powered = powered;
     }
 
     public void setLevel(int level)

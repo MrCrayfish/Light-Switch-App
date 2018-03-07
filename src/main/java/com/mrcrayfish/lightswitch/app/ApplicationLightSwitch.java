@@ -1,14 +1,16 @@
 package com.mrcrayfish.lightswitch.app;
 
+import com.mojang.text2speech.Narrator;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ButtonToggle;
 import com.mrcrayfish.device.api.app.component.ItemList;
-import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Slider;
+import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.network.NetworkDevice;
+import com.mrcrayfish.device.core.network.task.TaskGetDevices;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import com.mrcrayfish.lightswitch.app.task.TaskLightLevel;
 import com.mrcrayfish.lightswitch.block.BlockLight;
@@ -17,42 +19,43 @@ import com.mrcrayfish.lightswitch.tileentity.TileEntityLight;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraftforge.common.util.Constants;
 
 /**
  * Author: MrCrayfish
  */
 public class ApplicationLightSwitch extends Application
 {
+    private ItemList<Light> itemListLights;
+
     @Override
     public void init()
     {
         StandardLayout layoutMain = new StandardLayout("Select a Light", 150, 115, this, null);
         layoutMain.setIcon(Icons.LIGHT_BULB_ON);
 
-        ItemList<Light> itemListLights = new ItemList<>(5, 26, 120, 5);
+        itemListLights = new ItemList<>(5, 26, 120, 5);
         Slider sliderLightLevel = new Slider(5, 100, 120);
         ButtonToggle buttonSwitch = new ButtonToggle(130, 26, Icons.LIGHT_BULB_OFF);
 
         buttonSwitch.setEnabled(false);
-        buttonSwitch.setClickListener((mouseX, mouseY, i) ->
+        buttonSwitch.setClickListener((mouseX, mouseY, mouseButton) ->
         {
-            if(i == 0 && itemListLights.getSelectedIndex() != -1)
+            if(mouseButton == 0 && itemListLights.getSelectedIndex() != -1)
             {
                 Light light = itemListLights.getSelectedItem();
-                TaskLightLevel task = new TaskLightLevel(light.getPos(), !light.isPower() ? 15 : 0);
+                TaskLightLevel task = new TaskLightLevel(light.getPos(), !light.isPowered() ? 15 : 0);
                 task.setCallback((nbtTagCompound, success) ->
                 {
                     if(success)
                     {
-                        light.setPower(!light.isPower());
-                        buttonSwitch.setIcon(light.isPower() ? Icons.LIGHT_BULB_ON : Icons.LIGHT_BULB_OFF);
-                        sliderLightLevel.setPercentage(light.isPower() ? 1F : 0F);
+                        light.setPowered(!light.isPowered());
+                        buttonSwitch.setIcon(light.isPowered() ? Icons.LIGHT_BULB_ON : Icons.LIGHT_BULB_OFF);
+                        sliderLightLevel.setPercentage(light.isPowered() ? 1F : 0F);
                     }
                 });
                 TaskManager.sendTask(task);
@@ -60,15 +63,14 @@ public class ApplicationLightSwitch extends Application
         });
         layoutMain.addComponent(buttonSwitch);
 
-        itemListLights.setItems(getLights());
         itemListLights.setItemClickListener((light, i, mouseButton) ->
         {
             if(mouseButton == 0)
             {
                 buttonSwitch.setEnabled(true);
-                buttonSwitch.setSelected(light.isPower());
-                buttonSwitch.setIcon(light.isPower() ? Icons.LIGHT_BULB_ON : Icons.LIGHT_BULB_OFF);
-                sliderLightLevel.setPercentage(!light.isPower() ? 0F : (light.getLevel() - 1) / 14F);
+                buttonSwitch.setSelected(light.isPowered());
+                buttonSwitch.setIcon(light.isPowered() ? Icons.LIGHT_BULB_ON : Icons.LIGHT_BULB_OFF);
+                sliderLightLevel.setPercentage(!light.isPowered() ? 0F : (light.getLevel() - 1) / 14F);
             }
         });
         layoutMain.addComponent(itemListLights);
@@ -85,7 +87,8 @@ public class ApplicationLightSwitch extends Application
         });
         layoutMain.addComponent(sliderLightLevel);
 
-        setCurrentLayout(layoutMain);
+        this.setCurrentLayout(layoutMain);
+        this.getLights();
     }
 
     @Override
@@ -100,35 +103,36 @@ public class ApplicationLightSwitch extends Application
 
     }
 
-    private List<Light> getLights()
+    private void getLights()
     {
-        List<Light> lights = new ArrayList<>();
-
-        World world = Minecraft.getMinecraft().world;
-        BlockPos laptopPos = Laptop.getPos();
-        int range = 20;
-
-        for(int y = -range; y < range + 1; y++)
+        itemListLights.setLoading(true);
+        Task task = new TaskGetDevices(Laptop.getPos(), TileEntityLight.class);
+        task.setCallback((tagCompound, success) ->
         {
-            for(int z = -range; z < range + 1; z++)
+            if(success)
             {
-                for(int x = -range; x < range + 1; x++)
+                NBTTagList tagList = tagCompound.getTagList("network_devices", Constants.NBT.TAG_COMPOUND);
+                for(int i = 0; i < tagList.tagCount(); i++)
                 {
-                    BlockPos pos = new BlockPos(laptopPos.getX() + x, laptopPos.getY() + y, laptopPos.getZ() + z);
+                    NetworkDevice device = NetworkDevice.fromTag(tagList.getCompoundTagAt(i));
+
+                    BlockPos pos = device.getPos();
+                    if(pos == null)
+                        return;
+
+                    World world = Minecraft.getMinecraft().world;
                     IBlockState state = world.getBlockState(pos);
-                    if(state.getBlock() instanceof BlockLight)
+                    TileEntity tileEntity = world.getTileEntity(pos);
+                    if(tileEntity instanceof TileEntityLight)
                     {
-                        TileEntity tileEntity = world.getTileEntity(pos);
-                        if(tileEntity instanceof TileEntityLight)
-                        {
-                            TileEntityLight teLight = (TileEntityLight) tileEntity;
-                            Light light = new Light(teLight.getName(), pos, state.getValue(BlockLight.LIGHT_LEVEL));
-                            lights.add(light);
-                        }
+                        TileEntityLight teLight = (TileEntityLight) tileEntity;
+                        Light light = new Light(teLight.getName(), pos, state.getValue(BlockLight.LIGHT_LEVEL));
+                        itemListLights.addItem(light);
                     }
                 }
             }
-        }
-        return lights;
+            itemListLights.setLoading(false);
+        });
+        TaskManager.sendTask(task);
     }
 }

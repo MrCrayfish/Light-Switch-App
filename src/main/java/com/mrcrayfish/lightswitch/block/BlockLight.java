@@ -1,5 +1,6 @@
 package com.mrcrayfish.lightswitch.block;
 
+import com.mrcrayfish.device.block.BlockDevice;
 import com.mrcrayfish.lightswitch.Reference;
 import com.mrcrayfish.lightswitch.tileentity.TileEntityLight;
 import net.minecraft.block.Block;
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class BlockLight extends Block implements ITileEntityProvider
+public class BlockLight extends BlockDevice
 {
     public static final PropertyInteger LIGHT_LEVEL = PropertyInteger.create("light_level", 0, 15);
 
@@ -120,7 +121,7 @@ public class BlockLight extends Block implements ITileEntityProvider
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
+    public TileEntity createTileEntity(World world, IBlockState iBlockState)
     {
         return new TileEntityLight();
     }
