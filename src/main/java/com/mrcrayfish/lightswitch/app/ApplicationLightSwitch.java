@@ -9,6 +9,7 @@ import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Slider;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import com.mrcrayfish.lightswitch.app.task.TaskLightLevel;
 import com.mrcrayfish.lightswitch.block.BlockLight;
 import com.mrcrayfish.lightswitch.object.Light;
@@ -31,11 +32,12 @@ public class ApplicationLightSwitch extends Application
     @Override
     public void init()
     {
-        Layout layoutMain = new Layout(150, 120);
+        StandardLayout layoutMain = new StandardLayout("Select a Light", 150, 115, this, null);
+        layoutMain.setIcon(Icons.LIGHT_BULB_ON);
 
-        ItemList<Light> itemListLights = new ItemList<>(5, 18, 120, 6);
-        Slider sliderLightLevel = new Slider(5, 105, 120);
-        ButtonToggle buttonSwitch = new ButtonToggle(130, 18, Icons.POWER_ON);
+        ItemList<Light> itemListLights = new ItemList<>(5, 26, 120, 5);
+        Slider sliderLightLevel = new Slider(5, 100, 120);
+        ButtonToggle buttonSwitch = new ButtonToggle(130, 26, Icons.LIGHT_BULB_OFF);
 
         buttonSwitch.setEnabled(false);
         buttonSwitch.setClickListener((mouseX, mouseY, i) ->
@@ -49,7 +51,7 @@ public class ApplicationLightSwitch extends Application
                     if(success)
                     {
                         light.setPower(!light.isPower());
-                        buttonSwitch.setIcon(light.isPower() ? Icons.POWER_ON : Icons.POWER_OFF);
+                        buttonSwitch.setIcon(light.isPower() ? Icons.LIGHT_BULB_ON : Icons.LIGHT_BULB_OFF);
                         sliderLightLevel.setPercentage(light.isPower() ? 1F : 0F);
                     }
                 });
@@ -58,9 +60,6 @@ public class ApplicationLightSwitch extends Application
         });
         layoutMain.addComponent(buttonSwitch);
 
-        Label labelSelect = new Label("Select a Light", 5, 5);
-        layoutMain.addComponent(labelSelect);
-
         itemListLights.setItems(getLights());
         itemListLights.setItemClickListener((light, i, mouseButton) ->
         {
@@ -68,7 +67,7 @@ public class ApplicationLightSwitch extends Application
             {
                 buttonSwitch.setEnabled(true);
                 buttonSwitch.setSelected(light.isPower());
-                buttonSwitch.setIcon(light.isPower() ? Icons.POWER_ON : Icons.POWER_OFF);
+                buttonSwitch.setIcon(light.isPower() ? Icons.LIGHT_BULB_ON : Icons.LIGHT_BULB_OFF);
                 sliderLightLevel.setPercentage(!light.isPower() ? 0F : (light.getLevel() - 1) / 14F);
             }
         });
