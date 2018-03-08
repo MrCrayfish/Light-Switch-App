@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=north": { "model": "lightswitch:controller", "x": 90,  "y": 0   },
+    "facing=east":  { "model": "lightswitch:controller", "x": 90,  "y": 90  },
+    "facing=south": { "model": "lightswitch:controller", "x": 90,  "y": 180 },
+    "facing=west":  { "model": "lightswitch:controller", "x": 90,  "y": 270 },
+    "facing=up":    { "model": "lightswitch:controller", "x": 0,   "y": 0   },
+    "facing=down":  { "model": "lightswitch:controller", "x": 180, "y": 0   }
+  }
+}

@@ -1,10 +1,10 @@
 package com.mrcrayfish.lightswitch.block;
 
 import com.mrcrayfish.device.block.BlockDevice;
+import com.mrcrayfish.lightswitch.LightSwitch;
 import com.mrcrayfish.lightswitch.Reference;
 import com.mrcrayfish.lightswitch.tileentity.TileEntityLight;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
@@ -14,6 +14,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -36,6 +38,8 @@ public class BlockLight extends BlockDevice
         super(Material.GLASS);
         this.setUnlocalizedName("light");
         this.setRegistryName("light");
+        this.setCreativeTab(LightSwitch.TAB);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(LIGHT_LEVEL, 0));
     }
 
     @Override
@@ -86,6 +90,12 @@ public class BlockLight extends BlockDevice
                 worldIn.setTileEntity(pos, light);
             }
         }
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+    {
+        return this.getDefaultState();
     }
 
     @Override
