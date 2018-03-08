@@ -1,5 +1,6 @@
 tile.light.name=Light
 tile.controller.name=Controller
+item.electric_cable.name=Electric Cable
 
 app.lightswitch.light_switch.desc=Control your remote lights with this application.
 
