@@ -24,12 +24,10 @@ public class LightSwitch
 {
     public static final CreativeTabs TAB = new CreativeTabs("tabLightswitch")
     {
-        private final ItemStack ITEM = new ItemStack(ModBlocks.CONTROLLER);
-
         @Override
         public ItemStack getTabIconItem()
         {
-            return ITEM;
+            return new ItemStack(ModBlocks.CONTROLLER);
         }
     };
 
