@@ -12,10 +12,13 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.network.NetworkDevice;
 import com.mrcrayfish.device.core.network.task.TaskGetDevices;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import com.mrcrayfish.lightswitch.app.task.TaskLightLevel;
 import com.mrcrayfish.lightswitch.block.BlockLight;
 import com.mrcrayfish.lightswitch.object.Light;
+import com.mrcrayfish.lightswitch.tileentity.TileEntityController;
 import com.mrcrayfish.lightswitch.tileentity.TileEntityLight;
+import com.mrcrayfish.lightswitch.tileentity.TileEntitySource;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -106,7 +109,7 @@ public class ApplicationLightSwitch extends Application
     private void getLights()
     {
         itemListLights.setLoading(true);
-        Task task = new TaskGetDevices(Laptop.getPos(), TileEntityLight.class);
+        Task task = new TaskGetDevices(Laptop.getPos(), TileEntitySource.class);
         task.setCallback((tagCompound, success) ->
         {
             if(success)
@@ -126,7 +129,13 @@ public class ApplicationLightSwitch extends Application
                     if(tileEntity instanceof TileEntityLight)
                     {
                         TileEntityLight teLight = (TileEntityLight) tileEntity;
-                        Light light = new Light(teLight.getName(), pos, state.getValue(BlockLight.LIGHT_LEVEL));
+                        Light light = new Light(teLight.getName(), pos, ((TileEntityLight) tileEntity).getLevel());
+                        itemListLights.addItem(light);
+                    }
+                    else if(tileEntity instanceof TileEntityController)
+                    {
+                        TileEntityController controller = (TileEntityController) tileEntity;
+                        Light light = new Light(controller.getName(), pos, ((TileEntityController) tileEntity).getLevel());
                         itemListLights.addItem(light);
                     }
                 }

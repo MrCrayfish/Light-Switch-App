@@ -46,4 +46,6 @@ public abstract class TileEntitySource extends TileEntityNetworkDevice
     }
 
     public abstract void setLevel(int level);
+
+    public abstract int getLevel();
 }

@@ -25,4 +25,10 @@ public class TileEntityLight extends TileEntitySource
         IBlockState state = world.getBlockState(pos);
         world.setBlockState(pos, state.withProperty(BlockLight.LIGHT_LEVEL, Math.max(0, Math.min(15, level))));
     }
+
+    @Override
+    public int getLevel()
+    {
+        return world.getBlockState(pos).getValue(BlockLight.LIGHT_LEVEL);
+    }
 }

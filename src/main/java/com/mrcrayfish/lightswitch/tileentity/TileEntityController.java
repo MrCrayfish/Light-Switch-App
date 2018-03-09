@@ -10,6 +10,7 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Author: MrCrayfish
@@ -18,6 +19,7 @@ public class TileEntityController extends TileEntitySource
 {
     private Set<NetworkDevice> connectedLights = new HashSet<>();
     private int counter;
+    private int lightLevel;
 
     @Override
     public void update()
@@ -59,24 +61,42 @@ public class TileEntityController extends TileEntitySource
     {
         super.readFromNBT(compound);
 
-        connectedLights.clear();
         if(compound.hasKey("connected_lights", Constants.NBT.TAG_LIST))
         {
+            connectedLights.clear();
             NBTTagList deviceList = compound.getTagList("connected_lights", Constants.NBT.TAG_COMPOUND);
             for(int i = 0; i < deviceList.tagCount(); i++)
             {
                 connectedLights.add(NetworkDevice.fromTag(deviceList.getCompoundTagAt(i)));
             }
         }
+
+        if(compound.hasKey("light_level", Constants.NBT.TAG_INT))
+        {
+            lightLevel = compound.getInteger("light_level");
+        }
     }
 
-    public void addLight(BlockPos pos)
+    @Override
+    public NBTTagCompound writeSyncTag()
     {
+        NBTTagCompound tag = super.writeSyncTag();
+        tag.setInteger("light_level", lightLevel);
+        return tag;
+    }
+
+    public boolean addLight(BlockPos pos)
+    {
+        if(this.isRegistered(pos))
+            return false;
+
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityLight)
+        if(tileEntity instanceof TileEntitySource)
         {
             connectedLights.add(new NetworkDevice((TileEntityNetworkDevice) tileEntity));
+            return true;
         }
+        return false;
     }
 
     public void removeLight(TileEntitySource source)
@@ -87,6 +107,8 @@ public class TileEntityController extends TileEntitySource
     @Override
     public void setLevel(int level)
     {
+        this.lightLevel = level;
+        this.sync();
         connectedLights.forEach(networkDevice ->
         {
             TileEntity tileEntity = world.getTileEntity(networkDevice.getPos());
@@ -95,5 +117,28 @@ public class TileEntityController extends TileEntitySource
                 ((TileEntitySource) tileEntity).setLevel(level);
             }
         });
+    }
+
+    @Override
+    public int getLevel()
+    {
+        return this.lightLevel;
+    }
+
+    public boolean isRegistered(BlockPos pos)
+    {
+        if(this.getPos().equals(pos))
+            return true;
+
+        final Predicate<NetworkDevice> HAS_DEVICE = networkDevice ->
+        {
+            TileEntity tileEntity = world.getTileEntity(networkDevice.getPos());
+            if(tileEntity instanceof TileEntityController)
+            {
+                return networkDevice.getPos().equals(pos) || ((TileEntityController) tileEntity).isRegistered(pos);
+            }
+            return false;
+        };
+        return connectedLights.stream().anyMatch(HAS_DEVICE);
     }
 }
