@@ -70,7 +70,10 @@ public class ItemElectricCable extends Item
                     }
                     else if(getDistance(device.getPos(), source.getPos()) <= 10) //TODO: LightConfig.getSignalRange() add config soon
                     {
-                        controller.addLight(devicePos);
+                        if(controller.addLight(devicePos))
+                        {
+                            heldItem.shrink(1);
+                        }
                     }
                     else
                     {
