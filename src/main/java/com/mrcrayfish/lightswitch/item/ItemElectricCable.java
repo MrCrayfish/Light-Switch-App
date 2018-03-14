@@ -51,12 +51,6 @@ public class ItemElectricCable extends Item
 
             if(heldItem.hasTagCompound() && source instanceof TileEntityController)
             {
-                if(!heldItem.hasTagCompound())
-                {
-                    sendGameInfoMessage(player, "message.invalid_cable");
-                    return EnumActionResult.SUCCESS;
-                }
-
                 TileEntityController controller = (TileEntityController) source;
                 NBTTagCompound tag = heldItem.getTagCompound();
                 BlockPos devicePos = BlockPos.fromLong(tag.getLong("pos"));
@@ -68,7 +62,7 @@ public class ItemElectricCable extends Item
                     {
                         sendGameInfoMessage(player, "message.light_already_registered");
                     }
-                    else if(getDistance(device.getPos(), source.getPos()) <= 10) //TODO: LightConfig.getSignalRange() add config soon
+                    else if(getDistance(device.getPos(), source.getPos()) <= 20) //TODO: LightConfig.getSignalRange() add config soon
                     {
                         if(controller.addLight(devicePos))
                         {
