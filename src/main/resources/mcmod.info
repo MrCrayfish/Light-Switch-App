@@ -3,7 +3,7 @@
   "modid": "lightswitch",
   "name": "Light Switch App",
   "description": "Allows you to remotely turn lights on and off using a application",
-  "version": "1.1",
+  "version": "1.1.1",
   "mcversion": "1.12.2",
   "url": "",
   "updateUrl": "",
