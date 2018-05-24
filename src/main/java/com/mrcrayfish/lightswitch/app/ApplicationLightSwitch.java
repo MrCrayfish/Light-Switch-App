@@ -28,6 +28,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
@@ -36,7 +38,7 @@ public class ApplicationLightSwitch extends Application
     private ItemList<Light> itemListLights;
 
     @Override
-    public void init()
+    public void init(@Nullable NBTTagCompound intent)
     {
         StandardLayout layoutMain = new StandardLayout("Select a Light", 150, 115, this, null);
         layoutMain.setIcon(Icons.LIGHT_BULB_ON);
@@ -124,7 +126,6 @@ public class ApplicationLightSwitch extends Application
                         return;
 
                     World world = Minecraft.getMinecraft().world;
-                    IBlockState state = world.getBlockState(pos);
                     TileEntity tileEntity = world.getTileEntity(pos);
                     if(tileEntity instanceof TileEntityLight)
                     {
