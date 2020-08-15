@@ -1,11 +1,11 @@
-tile.light.name=Licht
+tile.light.name=Lampe
 tile.controller.name=Steuereinheit
 item.electric_cable.name=Stromkabel
 
-app.lightswitch.light_switch.desc=Steuere deine entfernten Lichter mit dieser Anwendung.
+app.lightswitch.light_switch.desc=Steuere deine Lampen mit dieser Anwendung.
 
 itemGroup.tabLightswitch=Lichtschalter
 
-message.light_already_registered=Dieses Licht ist bereits verbunden
-message.light_too_far=Das Licht, welches versucht wird zu verbinden, ist zu weit entfernt
-message.select_controller=Wähle nun eine Steuereinheit um dieses Licht zu verbinden...
+message.light_already_registered=Diese Lampe ist bereits verbunden
+message.light_too_far=Die Lampe, welche versucht wird zu verbinden, ist zu weit entfernt
+message.select_controller=Wähle nun eine Steuereinheit um diese Lampe zu verbinden...
