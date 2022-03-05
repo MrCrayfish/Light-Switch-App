@@ -1,0 +1,11 @@
+tile.light.name=Light
+tile.controller.name=Controller
+item.electric_cable.name=Electric Cable
+
+app.lightswitch.light_switch.desc=Control your remote lights with this application.
+
+itemGroup.tabLightswitch=Light Switch
+
+message.light_already_registered=This light has already been connected
+message.light_too_far=The light attempting to be connected is too far away
+message.select_controller=Now select a controller to connect this light to...
